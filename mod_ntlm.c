@@ -477,10 +477,10 @@ note_ntlm_auth_failure(request_rec * r)
 
     line = apr_pstrdup(r->pool, NTLM_AUTH_NAME);
 
-    apr_table_setn(r->err_headers_out, r->proxyreq ? "Proxy-Authenticate" : "WWW-Authenticate", line);
+    apr_table_setn(r->err_headers_out, r->proxyreq && 0 ? "Proxy-Authenticate" : "WWW-Authenticate", line);
     if (crec->ntlm_basic_on) {
         line = apr_pstrcat(r->pool, "Basic realm=\"", crec->ntlm_basic_realm, "\"", NULL);
-        apr_table_addn(r->err_headers_out, r->proxyreq ? "Proxy-Authenticate" : "WWW-Authenticate", line);
+        apr_table_addn(r->err_headers_out, r->proxyreq && 0 ? "Proxy-Authenticate" : "WWW-Authenticate", line);
     }
 }
 
@@ -494,7 +494,7 @@ ntlmssp_info_rec *
 get_ntlm_header(request_rec * r, ntlm_config_rec * crec)
 {
     const char *auth_line = apr_table_get(r->headers_in,
-                                         r->proxyreq ? "Proxy-Authorization"
+                                         r->proxyreq && 0 ? "Proxy-Authorization"
                                          : "Authorization");
     unsigned char *msg;
     int len, foo;
@@ -576,8 +576,8 @@ send_ntlm_challenge(request_rec * r, ntlm_config_rec * crec, int win9x)
 		r->connection->keepalives -= 1;
 	}
 
-    apr_table_setn(r->err_headers_out, r->proxyreq ? "Proxy-Authenticate" : "WWW-Authenticate", apr_psprintf(r->pool, "%s %s", NTLM_AUTH_NAME, challenge));
-    log(r, APLOG_INFO, "send %s \"%s %s\"",r->proxyreq ? "Proxy-Authenticate" : "WWW-Authenticate", NTLM_AUTH_NAME, challenge);
+    apr_table_setn(r->err_headers_out, r->proxyreq && 0 ? "Proxy-Authenticate" : "WWW-Authenticate", apr_psprintf(r->pool, "%s %s", NTLM_AUTH_NAME, challenge));
+    log(r, APLOG_INFO, "send %s \"%s %s\"",r->proxyreq && 0 ? "Proxy-Authenticate" : "WWW-Authenticate", NTLM_AUTH_NAME, challenge);
 
     return HTTP_UNAUTHORIZED;
 }
@@ -804,7 +804,7 @@ static int
 authenticate_user(request_rec * r)
 {
     ntlm_config_rec *crec = (ntlm_config_rec *) ap_get_module_config(r->per_dir_config, &ntlm_module);
-    const char *auth_line = apr_table_get(r->headers_in, r->proxyreq ? "Proxy-Authorization" : "Authorization");
+    const char *auth_line = apr_table_get(r->headers_in, r->proxyreq && 0 ? "Proxy-Authorization" : "Authorization");
 
     if (!crec->ntlm_on) return DECLINED;
 
