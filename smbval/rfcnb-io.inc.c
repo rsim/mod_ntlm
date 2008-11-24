@@ -135,7 +135,6 @@ RFCNB_Put_Pkt(struct RFCNB_Con *con, struct RFCNB_Pkt *pkt, int len)
 
 #ifdef RFCNB_DEBUG
     fprintf(stderr, "Len sent = %i ...\n", len_sent);
-    RFCNB_Print_Pkt(stderr, "sent", pkt, len_sent); /* Print what send... */
 #endif
     return len_sent;
 }
@@ -205,7 +204,6 @@ RFCNB_Get_Pkt(struct RFCNB_Con *con, struct RFCNB_Pkt *pkt, int len)
          * supplied packet */
         memcpy(pkt->data, hdr, read_len);       /* Copy data */
 #ifdef RFCNB_DEBUG
-        RFCNB_Print_Pkt(stderr, "rcvd", pkt, read_len);
 #endif
         return read_len;
     }
@@ -279,7 +277,6 @@ RFCNB_Get_Pkt(struct RFCNB_Con *con, struct RFCNB_Pkt *pkt, int len)
 
 #ifdef RFCNB_DEBUG
     fprintf(stderr, "Pkt Len = %i, read_len = %i\n", pkt_len, read_len);
-    RFCNB_Print_Pkt(stderr, "rcvd", pkt, read_len + sizeof(hdr));
 #endif
 
     if (read_len < (pkt_len + sizeof(hdr))) {   /* Discard the rest */
